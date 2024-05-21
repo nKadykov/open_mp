@@ -6,7 +6,7 @@ int main() {
 	int N = 10;
 	std::cout << "N: ";
 	std::cin >> N;
-	int sum = 0;
+ 	int sum = 0;
 #pragma omp parallel reduction(+:sum) num_threads(2)
 	{
 		if (omp_get_thread_num() == 0) {
