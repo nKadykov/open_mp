@@ -3,21 +3,18 @@
 #include <windows.h>
 
 int main() {
+	int k = 4;
+	std::cout << "k: ";
+	std::cin >> k;
 	int N = 10;
 	std::cout << "N: ";
 	std::cin >> N;
  	int sum = 0;
-#pragma omp parallel reduction(+:sum) num_threads(2)
+#pragma omp parallel reduction(+:sum) num_threads(k)
 	{
-		if (omp_get_thread_num() == 0) {
-			for (int i = 1; i < N / 2; ++i) {
-				sum += i;
-			}
-		}
-		else {
-			for (int i = N / 2; i < N; ++i) {
-				sum += i;
-			}
+#pragma omp for
+		for (int i = 1; i <= N; ++i) {
+			sum += i;
 		}
 	}
 	std::cout << sum;
