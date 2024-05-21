@@ -1,22 +1,29 @@
 #include <omp.h>
 #include <iostream>
 #include <windows.h>
+#include <iomanip>
 
 int main() {
+	double start, end;
 	int k = 4;
-	std::cout << "k: ";
-	std::cin >> k;
-	int N = 10;
-	std::cout << "N: ";
+	int N;
+	std::cout << "Enter N: ";
 	std::cin >> N;
-	int sum = 0;
-#pragma omp parallel reduction(+:sum) num_threads(k)
+	double pi = 0;
+	start = omp_get_wtime();
+	#pragma omp parallel shared(pi) num_threads(k)
 	{
-#pragma omp for
-		for (int i = 1; i <= N; ++i) {
-#pragma omp atomic
-			sum += i;
+		#pragma omp for
+		for (int i = 0; i < N; ++i) {
+			#pragma omp critical
+			{
+				double x = (i + 0.5) / N;
+				pi += 4 / (1 + x * x) / N;
+			}
 		}
 	}
-	std::cout << sum;
+	std::cout.precision(9);
+	std::cout << "Sum: " << pi << '\n';
+	end = omp_get_wtime();
+	std::cout << "Time: " << end - start << '\n';
 }
